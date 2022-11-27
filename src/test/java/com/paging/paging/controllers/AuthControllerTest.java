@@ -1,5 +1,7 @@
 package com.paging.paging.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.paging.paging.model.LoginParam;
 import com.paging.paging.security.SecurityChain;
 import com.paging.paging.services.JwtTokenGenerator;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,9 @@ class AuthControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @Test
     void whenUnauthenticatedThen401() throws Exception {
         this.mockMvc
@@ -33,8 +38,11 @@ class AuthControllerTest {
     void whenAuthenticatedThen200() throws Exception {
         MvcResult mvcResult = this.mockMvc
                 .perform(post("/authenticate")
-                        .param("username", "admin")
-                        .param("password", "secret"))
+                                .contentType("application/json")
+                                .content(objectMapper.writeValueAsString(new LoginParam("admin", "secret")))
+//                        .param("username", "admin")
+//                        .param("password", "secret")
+                )
                 .andExpect(status().isOk())
                 .andReturn();
         String token = mvcResult.getResponse().getContentAsString();
@@ -48,7 +56,7 @@ class AuthControllerTest {
     @Test
     @WithUserDetails
     void authenticatedUserThen200() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get("/secured"))
+        this.mockMvc.perform(get("/secured"))
                 .andExpect(status().isOk())
                 .andReturn();
     }
@@ -56,7 +64,7 @@ class AuthControllerTest {
     @Test
     @WithUserDetails(value = "admin")
     void whenAuthenticatedAdminThen200() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get("/secured"))
+        this.mockMvc.perform(get("/secured"))
                 .andExpect(status().isOk())
                 .andReturn();
     }

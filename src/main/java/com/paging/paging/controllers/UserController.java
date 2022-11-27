@@ -1,5 +1,7 @@
 package com.paging.paging.controllers;
 
+import com.paging.paging.exceptions.EmptyUserRepositoryException;
+import com.paging.paging.exceptions.UserDoesNotExist;
 import com.paging.paging.model.User;
 import com.paging.paging.repository.UserRepository;
 import org.springframework.data.domain.Page;
@@ -10,8 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping(path = "/api/users")
 public class UserController {
     private final UserRepository userRepository;
 
@@ -21,24 +25,33 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('SCOPE_read')")
-    public ResponseEntity<User> usersById(@PathVariable("id") Long id) {
+    public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
         return userRepository
                 .findById(id)
-                .map((i) -> new ResponseEntity<>(i, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+                .map(i -> ResponseEntity.ok().body(i))
+                .orElseThrow(() -> {
+                    throw new UserDoesNotExist( id + " is not a valid user id");
+                });
+
     }
 
     @GetMapping({"/", "/all"})
     @PreAuthorize("hasAuthority('SCOPE_read')")
-    public Iterable<User> allUsers() {
-        return userRepository.findAll();
+    public ResponseEntity<List<User>> allUsers() {
+        var users = (List<User>) userRepository.findAll();
+        if (users.isEmpty())
+           throw new EmptyUserRepositoryException();
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority('SCOPE_read')")
-    public Page<User> getUsers(@RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<Page<User>> getUsers(@RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return userRepository.findAll(pageable);
+        Page<User> users = userRepository.findAll(pageable);
+        if (users.isEmpty())
+            throw new EmptyUserRepositoryException();
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
