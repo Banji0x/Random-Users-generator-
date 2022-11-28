@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,33 +24,34 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('SCOPE_read')")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public User getUserById(@PathVariable("id") Long id) {
         return userRepository
                 .findById(id)
-                .map(i -> ResponseEntity.ok().body(i))
                 .orElseThrow(() -> {
-                    throw new UserDoesNotExist( id + " is not a valid user id");
+                    throw new UserDoesNotExist(id + " is not a valid user id");
                 });
-
     }
 
     @GetMapping({"/", "/all"})
     @PreAuthorize("hasAuthority('SCOPE_read')")
-    public ResponseEntity<List<User>> allUsers() {
+    @ResponseStatus(HttpStatus.OK)
+    public List<User> allUsers() {
         var users = (List<User>) userRepository.findAll();
         if (users.isEmpty())
-           throw new EmptyUserRepositoryException();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+            throw new EmptyUserRepositoryException();
+        return users;
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority('SCOPE_read')")
-    public ResponseEntity<Page<User>> getUsers(@RequestParam int page, @RequestParam int size) {
+    @ResponseStatus(HttpStatus.OK)
+    public Page<User> getUsers(@RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> users = userRepository.findAll(pageable);
         if (users.isEmpty())
             throw new EmptyUserRepositoryException();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return users;
     }
 
     @DeleteMapping("/{id}")
