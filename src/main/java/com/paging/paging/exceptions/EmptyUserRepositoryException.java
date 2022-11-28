@@ -7,6 +7,6 @@ public class EmptyUserRepositoryException extends RuntimeException {
     private final String message;
 
     public EmptyUserRepositoryException() {
-        this.message = "Repository is empty";
+        this.message = "repository is empty";
     }
 }
