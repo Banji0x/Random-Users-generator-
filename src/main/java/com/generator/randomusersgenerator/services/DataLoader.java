@@ -1,9 +1,9 @@
 package com.generator.randomusersgenerator.services;
 
+import com.generator.randomusersgenerator.model.Address;
+import com.generator.randomusersgenerator.model.User;
+import com.generator.randomusersgenerator.repository.UserRepository;
 import com.github.javafaker.Faker;
-import com.paging.paging.model.Address;
-import com.paging.paging.model.User;
-import com.paging.paging.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
