@@ -1,4 +1,4 @@
-package com.paging.paging.security;
+package com.generator.randomusersgenerator.security;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.JWKSet;

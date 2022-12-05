@@ -1,4 +1,4 @@
-package com.paging.paging.model;
+package com.generator.randomusersgenerator.model;
 
 import lombok.Getter;
 import lombok.ToString;

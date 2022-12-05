@@ -1,4 +1,4 @@
-package com.paging.paging.services;
+package com.generator.randomusersgenerator.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

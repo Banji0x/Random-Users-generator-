@@ -1,4 +1,4 @@
-package com.paging.paging.annotation;
+package com.generator.randomusersgenerator.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package com.paging.paging.repository;
+package com.generator.randomusersgenerator.repository;
 
 
 import com.paging.paging.model.User;

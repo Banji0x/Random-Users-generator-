@@ -1,4 +1,4 @@
-package com.paging.paging.controllers;
+package com.generator.randomusersgenerator.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paging.paging.model.LoginParam;

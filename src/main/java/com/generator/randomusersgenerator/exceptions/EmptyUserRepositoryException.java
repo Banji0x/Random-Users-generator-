@@ -1,4 +1,4 @@
-package com.paging.paging.exceptions;
+package com.generator.randomusersgenerator.exceptions;
 
 import lombok.Getter;
 

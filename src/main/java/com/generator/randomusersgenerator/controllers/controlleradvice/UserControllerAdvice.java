@@ -1,4 +1,4 @@
-package com.paging.paging.controllers.controllerAdvice;
+package com.generator.randomusersgenerator.controllers.controlleradvice;
 
 import com.paging.paging.controllers.UserController;
 import com.paging.paging.exceptions.EmptyUserRepositoryException;

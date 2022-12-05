@@ -1,4 +1,4 @@
-package com.paging.paging;
+package com.generator.randomusersgenerator;
 
 //import com.paging.paging.model.Page;
 

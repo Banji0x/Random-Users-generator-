@@ -1,4 +1,4 @@
-package com.paging.paging.services;
+package com.generator.randomusersgenerator.services;
 
 import com.github.javafaker.Faker;
 import com.paging.paging.model.Address;

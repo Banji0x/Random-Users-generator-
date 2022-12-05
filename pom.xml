@@ -8,8 +8,8 @@
         <version>2.7.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.paging</groupId>
-    <artifactId>Paging</artifactId>
+    <groupId>com.generator</groupId>
+    <artifactId>RandomUsersGenerator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Paging</name>
     <description>Paging</description>
