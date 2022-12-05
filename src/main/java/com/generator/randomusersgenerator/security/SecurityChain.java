@@ -1,11 +1,11 @@
 package com.generator.randomusersgenerator.security;
 
+import com.generator.randomusersgenerator.annotation.SecurityLog;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.paging.paging.annotation.SecurityLog;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -57,7 +57,7 @@ public class SecurityChain {
         UserDetails adminDetails = User
                 .withUsername("admin")
                 .password(passwordEncoder.encode("secret"))
-                .authorities("read", "delete")
+                .authorities("read", "delete","create")
                 .build();
         UserDetails userDetails = User
                 .withUsername("user")
