@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/secured")
-public class SecureController {
+public class SecuredController {
     @GetMapping
     public String secured(Authentication authentication) {
         return "Principal name -> " + authentication.getName() + ", authorities -> " + authentication.getAuthorities();
