@@ -1,16 +1,18 @@
 package com.generator.randomusersgenerator.controllers;
 
-import com.paging.paging.exceptions.EmptyUserRepositoryException;
-import com.paging.paging.exceptions.UserDoesNotExist;
-import com.paging.paging.model.User;
-import com.paging.paging.repository.UserRepository;
+import com.generator.randomusersgenerator.exceptions.EmptyUserRepositoryException;
+import com.generator.randomusersgenerator.exceptions.UserDoesNotExistException;
+import com.generator.randomusersgenerator.model.User;
+import com.generator.randomusersgenerator.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -29,14 +31,14 @@ public class UserController {
         return userRepository
                 .findById(id)
                 .orElseThrow(() -> {
-                    throw new UserDoesNotExist(id + " is not a valid user id");
+                    throw new UserDoesNotExistException(id);
                 });
     }
 
     @GetMapping({"/", "/all"})
     @PreAuthorize("hasAuthority('SCOPE_read')")
     @ResponseStatus(HttpStatus.OK)
-    public List<User> allUsers() {
+    public List<User> getAllUsers() {
         var users = (List<User>) userRepository.findAll();
         if (users.isEmpty())
             throw new EmptyUserRepositoryException();
@@ -46,7 +48,7 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasAuthority('SCOPE_read')")
     @ResponseStatus(HttpStatus.OK)
-    public Page<User> getUsers(@RequestParam int page, @RequestParam int size) {
+    public Page<User> getUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "7") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> users = userRepository.findAll(pageable);
         if (users.isEmpty())
@@ -58,6 +60,17 @@ public class UserController {
     @PreAuthorize("hasAuthority('SCOPE_delete')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserById(@PathVariable Long id) {
+        if (!userRepository.existsById(id))
+            throw new UserDoesNotExistException(id);
+        userRepository.deleteById(id);
+    }
+
+    @DeleteMapping
+    @PreAuthorize("hasAuthority('SCOPE_delete')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUserByIdViaParam(@RequestParam Long id) {
+        if (!userRepository.existsById(id))
+            throw new UserDoesNotExistException(id);
         userRepository.deleteById(id);
     }
 
@@ -65,6 +78,9 @@ public class UserController {
     @PreAuthorize("hasAuthority('SCOPE_delete')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAllUsers() {
+        List<User> users = userRepository.findAll();
+        if (users.isEmpty())
+            throw new EmptyUserRepositoryException();
         userRepository.deleteAll();
     }
 }
