@@ -1,24 +1,20 @@
 package com.generator.randomusersgenerator.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.paging.paging.model.LoginParam;
-import com.paging.paging.security.SecurityChain;
-import com.paging.paging.services.JwtTokenGenerator;
+import com.generator.randomusersgenerator.model.LoginParam;
+import com.generator.randomusersgenerator.security.SecurityChain;
+import com.generator.randomusersgenerator.services.JwtTokenGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest({AuthController.class, SecureController.class})
+@WebMvcTest({AuthController.class})
 @Import({JwtTokenGenerator.class, SecurityChain.class})
 class AuthControllerTest {
     @Autowired
@@ -27,45 +23,51 @@ class AuthControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+
+//    @MockBean
+    @Autowired
+    AuthenticationManager authManager;
+
     @Test
-    void whenUnauthenticatedThen401() throws Exception {
+    void whenUnauthenticated_then401() throws Exception {
         this.mockMvc
-                .perform(get("/secured"))
+                .perform(post("/authenticate")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(new LoginParam("hacker", "secret")))
+                )
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void whenAuthenticatedThen200() throws Exception {
-        MvcResult mvcResult = this.mockMvc
+    void whenAuthenticated_then202Admin() throws Exception {
+        this.mockMvc
                 .perform(post("/authenticate")
-                                .contentType("application/json")
-                                .content(objectMapper.writeValueAsString(new LoginParam("admin", "secret")))
-//                        .param("username", "admin")
-//                        .param("password", "secret")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(new LoginParam("admin", "secret")))
                 )
-                .andExpect(status().isOk())
-                .andReturn();
-        String token = mvcResult.getResponse().getContentAsString();
-
-        this.mockMvc.perform(get("/secured")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Principal name -> admin, authorities -> " + "[SCOPE_delete, SCOPE_read]"));
+                .andExpect(status().isAccepted());
     }
 
     @Test
-    @WithUserDetails
-    void authenticatedUserThen200() throws Exception {
-        this.mockMvc.perform(get("/secured"))
-                .andExpect(status().isOk())
-                .andReturn();
+    void whenAuthenticated_then202User() throws Exception {
+        this.mockMvc
+                .perform(post("/login")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(new LoginParam("user", "secret"))))
+                .andExpect(status().isAccepted());
     }
 
-    @Test
-    @WithUserDetails(value = "admin")
-    void whenAuthenticatedAdminThen200() throws Exception {
-        this.mockMvc.perform(get("/secured"))
-                .andExpect(status().isOk())
-                .andReturn();
-    }
+//    @Test
+//    void whenValidInput_thenMapsToBusinessModel() throws Exception {
+//        var loginParam = new LoginParam("user", "secret");
+//        this.mockMvc
+//                .perform(post("/login")
+//                        .contentType("application/json")
+//                        .content(objectMapper.writeValueAsString(loginParam)))
+//                .andExpect(status().isAccepted());
+//        ArgumentCaptor<LoginParam> loginParamArgumentCaptor = ArgumentCaptor.forClass(LoginParam.class);
+//        AuthenticationManager authenticationManager = mock(AuthenticationManager.class);
+//        verify(authenticationManager).authenticate()
+//    }
+
 }
