@@ -1,8 +1,8 @@
 package com.generator.randomusersgenerator.repository;
 
 
-import com.paging.paging.model.User;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.generator.randomusersgenerator.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends PagingAndSortingRepository<User,Long> {
 }
