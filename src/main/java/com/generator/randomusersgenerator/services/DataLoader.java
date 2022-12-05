@@ -30,10 +30,7 @@ public class DataLoader {
                                             detailsFaker.address().zipCode(),
                                             detailsFaker.address().city(),
                                             detailsFaker.address().state(),
-                                            detailsFaker.address().country()
-                                    )
-                            )
-                    )
+                                            detailsFaker.address().country())))
                     .toList();
             userRepository.saveAll(users);
         };
