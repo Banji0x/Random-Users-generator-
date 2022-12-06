@@ -31,7 +31,7 @@ class AuthControllerTest {
     @Test
     void whenUnauthenticated_then401() throws Exception {
         this.mockMvc
-                .perform(post("/authenticate")
+                .perform(post("/generateToken")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(new LoginParam("hacker", "secret")))
                 )
@@ -41,19 +41,10 @@ class AuthControllerTest {
     @Test
     void whenAuthenticated_then202Admin() throws Exception {
         this.mockMvc
-                .perform(post("/authenticate")
+                .perform(post("/generateToken")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(new LoginParam("admin", "secret")))
                 )
-                .andExpect(status().isAccepted());
-    }
-
-    @Test
-    void whenAuthenticated_then202User() throws Exception {
-        this.mockMvc
-                .perform(post("/login")
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(new LoginParam("user", "secret"))))
                 .andExpect(status().isAccepted());
     }
 

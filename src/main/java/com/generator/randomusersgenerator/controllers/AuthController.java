@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = {"/authenticate", "/login"})
+@RequestMapping(path = {"/generateToken"})
 @Slf4j
 public class AuthController {
     private final AuthenticationManager authManager;

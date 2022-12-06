@@ -40,7 +40,7 @@ public class SecurityChain {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeRequests(auth -> auth
                         .antMatchers("/h2-console/**").permitAll()
-                        .mvcMatchers("/authenticate","/login").permitAll()
+                        .mvcMatchers("/generateToken").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,7 +1,6 @@
 # Random-users-generator
     ABOUT PROJECT
 Random-users-generator is a web application that **automatically generates 100 random fake users on startup**, the generated users includes fields such as: **an id,firstname,lastname,phone-number,email-address,street-address,zip-code,city,state and country.**
-
 This project is secured using OAuth2,security logs are saved to the securityLog.txt, and it also includes 2 InmemoryUsers- admin and user with different authorities.
 
 ### Inmemory users
