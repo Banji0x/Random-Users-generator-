@@ -27,4 +27,4 @@ The dependencies are in the Pom.xml file located in the root directory.
 ### How to run
 1. Simply invoke the main method in the RandomUsersGeneratorApplication class located in the com.generator.randomusersgenerator package.
 2. Visit "/generateToken" and pass in a username and password in the request body for authentication.**If authentication was successful then a JWT will be generated or else an HttpStatus 401 will be returned.**
-3. **The generated Jwt token must be included in the Authorization header as a Bearer token** for permission to access authorized routes.  
+3. **The generated Jwt token must be included in the Authorization header as a Bearer token for permission to access authorized routes for every request.**
