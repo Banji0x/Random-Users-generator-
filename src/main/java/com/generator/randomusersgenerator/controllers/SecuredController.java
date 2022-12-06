@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/secured")
+@RequestMapping(path = "/secured", consumes = "application/json")
 public class SecuredController {
     @GetMapping
     public String secured(Authentication authentication) {

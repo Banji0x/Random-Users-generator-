@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = {"/generateToken"})
+@RequestMapping(path = {"/generateToken"},consumes = "application/json")
 @Slf4j
 public class AuthController {
     private final AuthenticationManager authManager;
@@ -27,7 +27,7 @@ public class AuthController {
         this.jwtTokenGenerator = jwtTokenGenerator;
     }
 
-    @PostMapping(consumes = "application/json")
+    @PostMapping
     public ResponseEntity<String> generateToken(@RequestBody LoginParam loginParam) {
         try {
             Authentication authentication = authManager

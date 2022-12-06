@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,7 +31,8 @@ class SecuredControllerTest {
     @Test
     @WithUserDetails
     void whenAuthenticatedUser_then200() throws Exception {
-        this.mockMvc.perform(get("/secured"))
+        this.mockMvc.perform(get("/secured")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Principal name -> user, authorities -> [read]"))
                 .andReturn();
@@ -39,7 +41,8 @@ class SecuredControllerTest {
     @Test
     @WithUserDetails(value = "admin")
     void whenAuthenticatedAdmin_then200() throws Exception {
-        this.mockMvc.perform(get("/secured"))
+        this.mockMvc.perform(get("/secured")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Principal name -> admin, authorities -> [create, delete, read]"))
                 .andReturn();

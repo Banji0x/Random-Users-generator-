@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
@@ -230,7 +231,7 @@ class UserControllerTest {
                 .thenReturn(Optional.of(user));
 
         var content = this.mockMvc
-                .perform(get("/api/users/{id}", user.getId()).header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .perform(get("/api/users/{id}", user.getId()).header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
         assertThat(content).isEqualTo(objectMapper.writeValueAsString(user));
@@ -250,7 +251,7 @@ class UserControllerTest {
                 .perform(get("/api/users")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .param("page", "0")
-                        .param("size", "7"))
+                        .param("size", "7").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
@@ -258,7 +259,7 @@ class UserControllerTest {
         // By default values if no parameter is provided
         var content1 = this.mockMvc
                 .perform(get("/api/users")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
@@ -275,13 +276,13 @@ class UserControllerTest {
                 .thenReturn(listOfUsers);
 
         var content = this.mockMvc
-                .perform(get("/api/users/").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .perform(get("/api/users/").header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
         assertThat(content).isEqualTo(objectMapper.writeValueAsString(listOfUsers));
 
         var content1 = this.mockMvc
-                .perform(get("/api/users/all").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .perform(get("/api/users/all").header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
         assertThat(content1).isEqualTo(objectMapper.writeValueAsString(listOfUsers));
@@ -297,13 +298,13 @@ class UserControllerTest {
                 .thenReturn(true);
 
         var content = this.mockMvc.perform(delete("/api/users/{id}", user.getId())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andReturn().getResponse().getContentAsString();
 
         assertThat(content).isEqualTo("");
 
-        verify(userRepository,atMostOnce()).existsById(user.getId());
+        verify(userRepository, atMostOnce()).existsById(user.getId());
     }
 
     void deleteUsersViaParam_thenReturns400(String token) throws Exception {
@@ -313,14 +314,14 @@ class UserControllerTest {
         when(userRepository.existsById(user.getId()))
                 .thenReturn(true);
 
-        var content = this.mockMvc.perform(delete("/api/users").param("id",user.getId().toString())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+        var content = this.mockMvc.perform(delete("/api/users").param("id", user.getId().toString())
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andReturn().getResponse().getContentAsString();
 
         assertThat(content).isEqualTo("");
 
-        verify(userRepository,atMostOnce()).existsById(user.getId());
+        verify(userRepository, atMostOnce()).existsById(user.getId());
     }
 
     void deleteAllUsers_thenReturns400(String token) throws Exception {
@@ -331,13 +332,13 @@ class UserControllerTest {
                 .thenReturn(List.of(user));
 
         var content = this.mockMvc.perform(delete("/api/users/all")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andReturn().getResponse().getContentAsString();
 
         assertThat(content).isEqualTo("");
 
-        verify(userRepository,atMostOnce()).existsById(user.getId());
+        verify(userRepository, atMostOnce()).existsById(user.getId());
     }
 
     //Exception Helper Methods
@@ -348,7 +349,7 @@ class UserControllerTest {
         user.setId(2L);
 
         var content = this.mockMvc.perform(delete("/api/users/{id}", user.getId())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
@@ -361,7 +362,7 @@ class UserControllerTest {
         user.setId(2L);
 
         var content = this.mockMvc.perform(delete("/api/users").param("id", user.getId().toString())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
@@ -374,7 +375,7 @@ class UserControllerTest {
         user.setId(2L);
 
         var content = this.mockMvc.perform(delete("/api/users/all")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
@@ -390,7 +391,7 @@ class UserControllerTest {
                 .thenThrow(new UserDoesNotExistException(3L));
 
         String response = this.mockMvc.perform(get("/api/users/{id}", user.getId())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
@@ -407,7 +408,7 @@ class UserControllerTest {
 
         var content = this.mockMvc
                 .perform(delete("/api/users").queryParam("id", user.getId().toString())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
@@ -426,7 +427,7 @@ class UserControllerTest {
                 .thenThrow(new UserDoesNotExistException(user.getId()));
 
         var content = this.mockMvc.perform(delete("/api/users/{id}", user.getId())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
@@ -443,7 +444,7 @@ class UserControllerTest {
                 .thenThrow(new EmptyUserRepositoryException());
 
         String response = this.mockMvc.perform(get("/api/users/")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
@@ -452,7 +453,7 @@ class UserControllerTest {
         assertThat(response).isEqualTo(expected);
 
         String response2 = this.mockMvc.perform(get("/api/users/all")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
@@ -469,7 +470,7 @@ class UserControllerTest {
 
         var response = this.mockMvc
                 .perform(get("/api/users")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON)
                         .param("page", "0")
                         .param("size", "7"))
                 .andExpect(status().isBadRequest())
@@ -481,7 +482,7 @@ class UserControllerTest {
 
         String response2 = this.mockMvc
                 .perform(get("/api/users")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
@@ -496,7 +497,7 @@ class UserControllerTest {
                 .thenThrow(new EmptyUserRepositoryException());
 
         var content = this.mockMvc.perform(delete("/api/users/all")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
