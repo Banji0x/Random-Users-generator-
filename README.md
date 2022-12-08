@@ -3,7 +3,7 @@
 Random-users-generator is a web application that **automatically generates 100 random fake users on startup**, the generated users includes fields such as: **an id,firstname,lastname,phone-number,email-address,street-address,zip-code,city,state and country.**
 This project is secured using OAuth2,security logs are saved to the securityLog.txt, and it also includes 2 InmemoryUsers- admin and user with different authorities.
 
-### Inmemory users
+### InMemory users
 1. **admin, scope-read,create and delete.**
    The admin can get a specific generated user by id, get all generated users,create a new user to be persisted to the database, delete a specific generated user by id and delete all generated users in the user repository.
 2. **user, scope-read.**
